@@ -18,11 +18,7 @@ def run_task(task_pk: int, model_name: str):
         # TODO: Add hat connection here
 
         if isinstance(task, HatText):
-            text = task.text.upper()
-            assert len(text) <= 8, "Text is too long"
-
-            # pad text with spaces to 9 characters
-            text = text.ljust(9, " ")
+            text = task.text_for_hat
 
             # make post request to HAT Controller
             requests.post(
@@ -50,11 +46,5 @@ def run_task(task_pk: int, model_name: str):
         if isinstance(task, HatText):
             task_data = {**task_data, "text": task.text}
 
-        # wrap in transaction
-        with transaction.atomic():
-            GenericCompletedVotableTask.objects.create(
-                task_data=task_data,
-                upvotes=task.upvotes,
-                downvotes=task.downvotes,
-            )
-            task.delete()
+        # move to completed tasks and delete from original table
+        task.archive(task_data=task_data)

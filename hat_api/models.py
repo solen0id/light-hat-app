@@ -1,6 +1,7 @@
 # myapp/models.py
 from django.db import models
 from django.db.models import JSONField
+from django.db import transaction
 
 
 # create a mixin for all models that can be upvoted and scheduled as tasks
@@ -22,9 +23,33 @@ class VoteableTask(models.Model):
         self.vote_count -= 1
         self.save()
 
+    def archive(self, task_data=None):
+        with transaction.atomic():
+            GenericCompletedVotableTask.objects.create(
+                task_data=task_data,
+                upvotes=self.upvotes,
+                downvotes=self.downvotes,
+            )
+            self.delete()
+
 
 class HatText(VoteableTask, models.Model):
     text = models.CharField(max_length=8)
+
+    @property
+    def text_for_hat(self):
+        # Make uppercase and pad text with spaces to 9 characters
+        # so that the HAT can process it correctly
+        text = self.text.upper()
+        text = text.ljust(9, " ")
+
+        return self.text
+
+    def archive(self, task_data=None):
+        from .serializers import HatTextSerializer
+
+        task_data = HatTextSerializer(self).data
+        return super().archive(task_data=task_data)
 
 
 class GenericCompletedVotableTask(models.Model):

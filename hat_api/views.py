@@ -84,3 +84,16 @@ class HatTextViewSet(viewsets.ModelViewSet):
                 "vote_count": task.vote_count,
             }
         )
+
+    @action(detail=False, methods=["get"], url_path="top-text", url_name="top-text")
+    def top_text(self, request):
+        # intended only for HAT Controller,
+        # thats why it returns text/plain and empty string if no tasks
+        top_task = HatText.objects.order_by("-vote_count").first()
+
+        if top_task:
+            text = top_task.text_for_hat
+            top_task.archive()
+            return Response(data=text, content_type="text/plain")
+        else:
+            return Response(data="", content_type="text/plain")
