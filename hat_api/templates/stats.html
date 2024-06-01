@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hat Text Stats</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 60%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+      }
+      h2 {
+        margin-top: 20px;
+      }
+      .task-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .task-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .task-item span {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎩 Hat Text Stats 🎩</h1>
+      <h2>Most Upvoted Tasks</h2>
+      <ul class="task-list">
+        {% for task in most_upvoted_tasks %}
+        <li class="task-item">
+          <span>{{ task.task_data }}</span>
+          <div>
+            <span>Upvotes: {{ task.upvotes }}</span>
+            <span>Downvotes: {{ task.downvotes }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      <h2>Most Controversial Tasks</h2>
+      <ul class="task-list">
+        {% for task in most_controversial_tasks %}
+        <li class="task-item">
+          <span>{{ task.task_data }}</span>
+          <div>
+            <span>Upvotes: {{ task.upvotes }}</span>
+            <span>Downvotes: {{ task.downvotes }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from hat_api.views import HatTextViewSet, index
+from hat_api.views import HatTextViewSet, index, stats
 
 router = DefaultRouter()
 
@@ -26,6 +26,7 @@ router.register(r"texts", HatTextViewSet)
 
 urlpatterns = [
     path("", index, name="index"),
+    path("stats/", stats, name="stats"),
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
 ]
