@@ -21,6 +21,9 @@ def run_task(task_pk: int, model_name: str):
             text = task.text.upper()
             assert len(text) <= 8, "Text is too long"
 
+            # pad text with spaces to 9 characters
+            text = text.ljust(9, " ")
+
             # make post request to HAT Controller
             requests.post(
                 HAT_CONTROLLER_TEXT_ADDRESS,
