@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.http import HttpResponse
 
 from django.shortcuts import render
 from .models import HatText
@@ -113,9 +114,7 @@ class HatTextViewSet(viewsets.ModelViewSet):
             if text.startswith("!"):
                 text = text[1:]
 
-            print(repr(text))
-
             top_task.archive()
-            return Response(data=text, content_type="text/plain")
+            return HttpResponse(text)
         else:
-            return Response(data="", content_type="text/plain")
+            return HttpResponse("")
