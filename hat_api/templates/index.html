@@ -18,30 +18,47 @@
       .container {
         width: 90%;
         max-width: 600px;
-        margin: 0 auto;
+        margin: 20px auto;
         padding: 20px;
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-sizing: border-box;
       }
       h1 {
         text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
       }
       form {
-        margin-bottom: 20px;
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        z-index: 1000;
       }
       input[type="text"] {
-        width: calc(100% - 22px);
+        flex: 1;
         padding: 10px;
-        margin-bottom: 10px;
+        margin-right: 10px;
         box-sizing: border-box;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
       input[type="submit"] {
-        width: 100%;
-        padding: 10px;
+        padding: 10px 20px;
         background-color: #007bff;
         color: white;
         border: none;
         cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
       }
       input[type="submit"]:hover {
         background-color: #0056b3;
@@ -55,6 +72,7 @@
       .hat-list {
         list-style-type: none;
         padding: 0;
+        margin: 0;
       }
       .hat-item {
         padding: 10px;
@@ -64,19 +82,25 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       }
       .vote-buttons {
         display: flex;
         align-items: center;
       }
-      .upvote-button,
-      .downvote-button {
-        background: none;
-        border: none;
+      .vote-button {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        margin: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        margin: 0 5px;
-        font-size: 20px;
-        position: relative;
+        font-size: 24px;
+        border: none;
       }
       .upvote-button {
         color: green;
@@ -95,20 +119,20 @@
   <body>
     <div class="container">
       <h1>🎩 Light Hat 🎩</h1>
-      <form id="hat-form">
-        <input
-          type="text"
-          id="hat-text"
-          placeholder="Enter a new text (max 8 characters)"
-          maxlength="8"
-        />
-        <input type="submit" value="Add Text" />
-        <div class="error-message" id="error-message">
-          Text should not be longer than 8 characters.
-        </div>
-      </form>
       <ul class="hat-list" id="text-list"></ul>
     </div>
+    <form id="hat-form">
+      <input
+        type="text"
+        id="hat-text"
+        placeholder="Enter a new text (max 8 characters)"
+        maxlength="8"
+      />
+      <input type="submit" value="Add Text" />
+      <div class="error-message" id="error-message">
+        Text should not be longer than 8 characters.
+      </div>
+    </form>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("hat-form");
@@ -163,18 +187,18 @@
             const listItem = document.createElement("li");
             listItem.className = "hat-item";
             listItem.innerHTML = `
-                        <span>${text.text}</span>
-                        <div class="vote-buttons">
-                            <button class="downvote-button" data-id="${text.id}">
-                                <i class="fas fa-arrow-down"></i>
-                            </button>
-                            <span>- ${text.downvotes}</span>
-                            <button class="upvote-button" data-id="${text.id}">
-                                <i class="fas fa-arrow-up"></i>
-                            </button>
-                            <span>${text.upvotes}</span>
-                        </div>
-                    `;
+                      <span>${text.text}</span>
+                      <div class="vote-buttons">
+                          <button class="vote-button downvote-button" data-id="${text.id}">
+                              <i class="fas fa-arrow-down"></i>
+                          </button>
+                          <span>- ${text.downvotes}</span>
+                          <button class="vote-button upvote-button" data-id="${text.id}">
+                              <i class="fas fa-arrow-up"></i>
+                          </button>
+                          <span>${text.upvotes}</span>
+                      </div>
+                  `;
             textList.appendChild(listItem);
           });
           addVoteEventListeners();
