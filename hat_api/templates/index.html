@@ -85,16 +85,25 @@
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       }
+      .hat-item span {
+        font-size: 18px; /* Increased font size for task text */
+      }
       .vote-buttons {
         display: flex;
         align-items: center;
+      }
+      .vote-count {
+        font-size: 16px;
+        margin-right: 10px;
+        width: 40px; /* Fixed width for alignment */
+        text-align: right;
       }
       .vote-button {
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         padding: 10px;
-        margin: 0 10px;
+        margin: 0 5px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -125,10 +134,10 @@
       <input
         type="text"
         id="hat-text"
-        placeholder="Enter a new text (max 8 characters)"
+        placeholder="Your Text, 8 chars max"
         maxlength="8"
       />
-      <input type="submit" value="Add Text" />
+      <input type="submit" value="Submit" />
       <div class="error-message" id="error-message">
         Text should not be longer than 8 characters.
       </div>
@@ -189,14 +198,13 @@
             listItem.innerHTML = `
                       <span>${text.text}</span>
                       <div class="vote-buttons">
+                          <span class="vote-count">${text.vote_count}</span>
                           <button class="vote-button downvote-button" data-id="${text.id}">
                               <i class="fas fa-arrow-down"></i>
                           </button>
-                          <span>- ${text.downvotes}</span>
                           <button class="vote-button upvote-button" data-id="${text.id}">
                               <i class="fas fa-arrow-up"></i>
                           </button>
-                          <span>${text.upvotes}</span>
                       </div>
                   `;
             textList.appendChild(listItem);
