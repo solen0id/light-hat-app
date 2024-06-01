@@ -18,11 +18,11 @@ def run_task(task_pk: int, model_name: str):
         # TODO: Add hat connection here
 
         if isinstance(task, HatText):
-            text = task.text
+            text = task.text.upper()
             assert len(text) <= 8, "Text is too long"
 
             # make post request to HAT Controller
-            response = requests.post(
+            requests.post(
                 HAT_CONTROLLER_TEXT_ADDRESS,
                 data=text,
                 headers={"Content-Type": "text/plain"},
