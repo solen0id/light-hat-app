@@ -39,6 +39,15 @@
       .task-item span {
         font-weight: bold;
       }
+      .word-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .word-item {
+        padding: 5px;
+        margin-bottom: 5px;
+        background-color: #f8f9fa;
+      }
     </style>
   </head>
   <body>
@@ -48,7 +57,7 @@
       <ul class="task-list">
         {% for task in most_upvoted_tasks %}
         <li class="task-item">
-          <span>{{ task.task_data }}</span>
+          <span>{{ task.task_data.text }}</span>
           <div>
             <span>Upvotes: {{ task.upvotes }}</span>
             <span>Downvotes: {{ task.downvotes }}</span>
@@ -60,11 +69,19 @@
       <ul class="task-list">
         {% for task in most_controversial_tasks %}
         <li class="task-item">
-          <span>{{ task.task_data }}</span>
+          <span>{{ task.task_data.text }}</span>
           <div>
             <span>Upvotes: {{ task.upvotes }}</span>
             <span>Downvotes: {{ task.downvotes }}</span>
           </div>
+        </li>
+        {% endfor %}
+      </ul>
+      <h2>Top 20 Most Common Words</h2>
+      <ul class="word-list">
+        {% for word, count in most_common_words %}
+        <li class="word-item">
+          <span>{{ word }}: {{ count }}</span>
         </li>
         {% endfor %}
       </ul>

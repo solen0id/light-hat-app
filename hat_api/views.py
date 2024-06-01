@@ -9,6 +9,9 @@ from .serializers import HatTextSerializer
 from django.shortcuts import render
 from .models import GenericCompletedVotableTask
 from django.db.models import F, Q
+from collections import Counter
+import re
+from emf_hat.settings import N_MOST_ITEMS_STATS
 
 
 def index(request):
@@ -16,7 +19,9 @@ def index(request):
 
 
 def stats(request):
-    most_upvoted_tasks = GenericCompletedVotableTask.objects.order_by("-upvotes")[:10]
+    most_upvoted_tasks = GenericCompletedVotableTask.objects.order_by("-upvotes")[
+        :N_MOST_ITEMS_STATS
+    ]
 
     most_controversial_tasks = (
         GenericCompletedVotableTask.objects.annotate(
@@ -28,12 +33,24 @@ def stats(request):
             downvotes__gte=1,
             upvotes__gte=1,
         )
-        .order_by("-total_votes")[:10]
+        .order_by("-total_votes")[:N_MOST_ITEMS_STATS]
     )
+
+    # Extract words from task_data['text'] and count occurrences
+    word_counter = Counter()
+    tasks = GenericCompletedVotableTask.objects.all()
+
+    for task in tasks:
+        text = task.task_data.get("text", "")
+        words = re.findall(r"\b\w+\b", text.lower())
+        word_counter.update(words)
+
+    most_common_words = word_counter.most_common(N_MOST_ITEMS_STATS)
 
     context = {
         "most_upvoted_tasks": most_upvoted_tasks,
         "most_controversial_tasks": most_controversial_tasks,
+        "most_common_words": most_common_words,
     }
     return render(request, "stats.html", context)
 
