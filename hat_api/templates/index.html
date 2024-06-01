@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Light Hat Texts</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 50%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      input[type="text"] {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+        display: none;
+      }
+      .hat-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .hat-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .vote-buttons {
+        display: flex;
+        align-items: center;
+      }
+      .upvote-button,
+      .downvote-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin: 0 5px;
+        font-size: 20px;
+        position: relative;
+      }
+      .upvote-button {
+        color: green;
+      }
+      .upvote-button:hover {
+        color: darkgreen;
+      }
+      .downvote-button {
+        color: orange;
+      }
+      .downvote-button:hover {
+        color: darkorange;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎩 Light Hat 🎩</h1>
+      <form id="hat-form">
+        <input
+          type="text"
+          id="hat-text"
+          placeholder="Enter a new text (max 8 characters)"
+          maxlength="8"
+        />
+        <input type="submit" value="Add Text" />
+        <div class="error-message" id="error-message">
+          Text should not be longer than 8 characters.
+        </div>
+      </form>
+      <ul class="hat-list" id="text-list"></ul>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("hat-form");
+        const hatTextInput = document.getElementById("hat-text");
+        const textList = document.getElementById("text-list");
+        const errorMessage = document.getElementById("error-message");
+
+        let previousTexts = [];
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          const text = hatTextInput.value;
+
+          if (text.length > 8) {
+            errorMessage.style.display = "block";
+            return;
+          } else {
+            errorMessage.style.display = "none";
+          }
+
+          fetch("/api/texts/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({ text: text }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              hatTextInput.value = "";
+              fetchTexts();
+            });
+        });
+
+        function fetchTexts() {
+          fetch("/api/texts/")
+            .then((response) => response.json())
+            .then((data) => {
+              // Only update the DOM if the texts have changed
+              if (JSON.stringify(data) !== JSON.stringify(previousTexts)) {
+                previousTexts = data;
+                updateTextList(data);
+              }
+            });
+        }
+
+        function updateTextList(data) {
+          textList.innerHTML = "";
+          data.sort((a, b) => b.vote_count - a.vote_count);
+          data.forEach((text) => {
+            const listItem = document.createElement("li");
+            listItem.className = "hat-item";
+            listItem.innerHTML = `
+                        <span>${text.text}</span>
+                        <div class="vote-buttons">
+                            <button class="downvote-button" data-id="${text.id}">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <span>- ${text.downvotes}</span>
+                            <button class="upvote-button" data-id="${text.id}">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <span>${text.upvotes}</span>
+                        </div>
+                    `;
+            textList.appendChild(listItem);
+          });
+          addVoteEventListeners();
+        }
+
+        function addVoteEventListeners() {
+          document
+            .querySelectorAll(".upvote-button")
+            .forEach(function (button) {
+              button.addEventListener("click", function () {
+                const textId = this.getAttribute("data-id");
+                fetch(`/api/texts/${textId}/upvote/`, {
+                  method: "POST",
+                  headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    fetchTexts();
+                  });
+              });
+            });
+          document
+            .querySelectorAll(".downvote-button")
+            .forEach(function (button) {
+              button.addEventListener("click", function () {
+                const textId = this.getAttribute("data-id");
+                fetch(`/api/texts/${textId}/downvote/`, {
+                  method: "POST",
+                  headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    fetchTexts();
+                  });
+              });
+            });
+        }
+
+        // Poll for updates every 5 seconds
+        setInterval(fetchTexts, 5000);
+
+        // Initial fetch
+        fetchTexts();
+      });
+    </script>
+  </body>
+</html>

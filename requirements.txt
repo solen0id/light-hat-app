@@ -1,0 +1,5 @@
+Django 
+djangorestframework 
+celery[redis]
+psycopg2-binary
+requests
