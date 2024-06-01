@@ -9,6 +9,7 @@ class VoteableTask(models.Model):
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
     vote_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
@@ -43,7 +44,7 @@ class HatText(VoteableTask, models.Model):
         text = self.text.upper()
         text = text.ljust(9, " ")
 
-        return self.text
+        return text
 
     def archive(self, task_data=None):
         from .serializers import HatTextSerializer

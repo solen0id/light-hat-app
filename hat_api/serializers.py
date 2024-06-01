@@ -13,3 +13,5 @@ class HatTextSerializer(serializers.ModelSerializer):
     class Meta:
         model = HatText
         fields = "__all__"
+
+    # do a custom method for the field "text" where we check a condition

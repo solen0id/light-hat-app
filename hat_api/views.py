@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from django.shortcuts import render
 from .models import HatText
 from .serializers import HatTextSerializer
-
+from datetime import timedelta
 from django.shortcuts import render
 from .models import GenericCompletedVotableTask
 from django.db.models import F, Q
 from collections import Counter
 import re
 from emf_hat.settings import N_MOST_ITEMS_STATS
+from django.utils import timezone
 
 
 def index(request):
@@ -89,10 +90,31 @@ class HatTextViewSet(viewsets.ModelViewSet):
     def top_text(self, request):
         # intended only for HAT Controller,
         # thats why it returns text/plain and empty string if no tasks
-        top_task = HatText.objects.order_by("-vote_count").first()
+        top_tasks = HatText.objects.order_by("-vote_count")
+
+        # filter so that we only offer tasks to the hat that are:
+        # either more than 60 seconds old
+        # or have a vote_count of minimum 10 or more
+        # or start with the char ! (for special tasks)
+
+        now = timezone.now()
+
+        top_tasks = top_tasks.filter(
+            Q(created_at__lte=now - timedelta(seconds=60))
+            | Q(vote_count__gte=10)
+            | Q(text__startswith="!")
+        )
+
+        top_task = top_tasks.first()
 
         if top_task:
             text = top_task.text_for_hat
+
+            if text.startswith("!"):
+                text = text[1:]
+
+            print(repr(text))
+
             top_task.archive()
             return Response(data=text, content_type="text/plain")
         else:
