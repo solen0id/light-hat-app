@@ -1,7 +1,7 @@
 import time
 
 from django.core.cache import caches
-from rest_framework.throttling import BaseThrottle, SimpleRateThrottle
+from rest_framework.throttling import SimpleRateThrottle
 
 from emf_hat.settings import TASK_POST_PER_IP_RATE, TASK_VOTE_PER_IP_PER_MINUTE
 

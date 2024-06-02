@@ -16,11 +16,16 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Most common words to display in stats
 N_MOST_ITEMS_STATS = 10
+
+# when task is ready for hat to be picked up
 MIN_VOTE_COUNT_FOR_HAT_TASKS = 2
 MIN_SECONDS_FOR_HAT_TASKS = 60
-TASK_POST_PER_IP_RATE = "10/minute"
-TASK_VOTE_PER_IP_PER_MINUTE = 5
+
+# rate limiting
+TASK_POST_PER_IP_RATE = "10/minute"  # post tasks via API
+TASK_VOTE_PER_IP_PER_MINUTE = 5  # upvote/downvote tasks
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
