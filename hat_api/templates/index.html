@@ -16,13 +16,14 @@
         background-color: #f4f4f4;
       }
       .container {
-        width: 90%;
+        width: 100%;
         max-width: 600px;
         margin: 20px auto;
+        margin-top: 140px;
         padding: 20px;
         background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
+        /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+        /*border-radius: 8px;*/
         box-sizing: border-box;
         position: relative;
       }
@@ -31,7 +32,7 @@
         margin-bottom: 20px;
         font-size: 24px;
       }
-      form {
+      #hat-form {
         display: flex;
         position: fixed;
         bottom: 0;
@@ -108,7 +109,7 @@
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        padding: 10px;
+        padding: 20px;
         margin: 0 5px;
         display: flex;
         align-items: center;
@@ -129,19 +130,89 @@
       .downvote-button:hover {
         color: darkorange;
       }
-      .online-indicator {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 18px;
+      .message {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #030;
       }
+      .head {
+        width: 100%;
+        max-width: 600px;
+        position: fixed;
+        background: #fff;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        z-index: 1000;
+      }
+      .online-indicator {
+        background: #f4f4f4;
+        position: relative;
+        padding-right: 10px;
+        font-size: 18px;
+        text-align: left;
+      }
+      
+       /* Style the tab */
+      .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+      }
+
+      /* Style the buttons that are used to open the tab content */
+      .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+      }
+
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+
+      /* Create an active/current tablink class */
+      .tab button.active {
+        background-color: #ccc;
+      }
+
+      /* Style the tab content */
+      .tabcontent {
+        display: none;
+        /*padding: 6px 12px;*/
+        /*border: 1px solid #ccc;*/
+        border-top: none;
+      } 
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>🎩 Light Hat 🎩</h1>
+    
+    <div class="head"> 
       <div class="online-indicator" id="online-indicator">⚪ Checking...</div>
-      <ul class="hat-list" id="text-list"></ul>
+      <h1>🎩 Light Hat 🎩</h1>
+        
+      <!-- Tab links -->
+      <div class="tab">
+        <button class="tablinks" onclick="openCity(event, 'tab-hot')" id="defaultOpen">Hot</button>
+        <button class="tablinks" onclick="openCity(event, 'tab-history')">History</button>
+      </div>
+    </div>
+    
+    <div class="container">      
+      <div id="tab-hot" class="tabcontent">
+        <ul class="hat-list" id="text-list"></ul>
+      </div>
+      
+      <div id="tab-history" class="tabcontent">
+        <ul class="hat-list" id="text-list-completed"></ul>
+      </div>
     </div>
     <form id="hat-form">
       <input
@@ -160,10 +231,12 @@
         const form = document.getElementById("hat-form");
         const hatTextInput = document.getElementById("hat-text");
         const textList = document.getElementById("text-list");
+        const textListCompleted = document.getElementById("text-list-completed");
         const errorMessage = document.getElementById("error-message");
         const onlineIndicator = document.getElementById("online-indicator");
 
         let previousTexts = [];
+        let previousTextsCompleted = [];
 
         form.addEventListener("submit", function (e) {
           e.preventDefault();
@@ -196,9 +269,21 @@
             .then((response) => response.json())
             .then((data) => {
               // Only update the DOM if the texts have changed
+              if (JSON.stringify(data) !== JSON.stringify(previousTextsCompleted)) {
+                previousTextsCompleted = data;
+                updateTextList(data);
+              }
+            });
+        }
+        
+        function fetchTextsCompleted() {
+          fetch("/api/completed/")
+            .then((response) => response.json())
+            .then((data) => {
+              // Only update the DOM if the texts have changed
               if (JSON.stringify(data) !== JSON.stringify(previousTexts)) {
                 previousTexts = data;
-                updateTextList(data);
+                updateTextCompletedList(data);
               }
             });
         }
@@ -231,7 +316,7 @@
               text.is_ready ? "ready" : "not-ready"
             }`;
             listItem.innerHTML = `
-                      <span>${text.text}</span>
+                      <span class="message">${text.text}</span>
                       <div class="vote-buttons">
                           <span class="vote-count">${text.vote_count}</span>
                           <button class="vote-button downvote-button" data-id="${text.id}">
@@ -243,6 +328,32 @@
                       </div>
                   `;
             textList.appendChild(listItem);
+          });
+          addVoteEventListeners();
+        }
+        
+        function updateTextCompletedList(data) 
+        {
+          console.log(data);
+          textListCompleted.innerHTML = "";
+          data.sort((a, b) => b.task_data.vote_count - a.task_data.vote_count);
+          data.forEach((entry) => {
+            const text = entry.task_data;
+            console.log(text);
+            const listItem = document.createElement("li");
+            listItem.className = `hat-item ${
+              text.is_ready ? "ready" : "not-ready"
+            }`;
+            listItem.innerHTML = `
+                      <span class="message">${text.text}</span>
+                      <div class="vote-buttons">
+                          <span class="vote-count">${text.downvotes}</span>
+                          <i class="fas fa-arrow-down"></i>
+                          <span class="vote-count">${text.upvotes}</span>
+                          <i class="fas fa-arrow-up"></i>
+                      </div>
+                  `;
+            textListCompleted.appendChild(listItem);
           });
           addVoteEventListeners();
         }
@@ -288,12 +399,38 @@
 
         // Poll for updates every 5 seconds
         setInterval(fetchTexts, 5000);
+        setInterval(fetchTextsCompleted, 5000);
         setInterval(fetchHatActivity, 5000);
 
         // Initial fetch and ping
         fetchTexts();
+        fetchTextsCompleted()
         fetchHatActivity();
       });
+      
+      function openCity(evt, cityName) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+      } 
+      
+      // Get the element with id="defaultOpen" and click on it
+      document.getElementById("defaultOpen").click();
     </script>
   </body>
 </html>
