@@ -25,17 +25,23 @@ def stats(request):
         :N_MOST_ITEMS_STATS
     ]
 
+    # controversial tasks meet the following criteria:
+    # upvotes to downvote ratio close to one
+    # the more total votes the better
+    # at least one upvote and one downvote
+
     most_controversial_tasks = (
         GenericCompletedVotableTask.objects.annotate(
-            total_votes=F("upvotes") + F("downvotes")
+            ratio=F("upvotes") / F("downvotes") + 0.000001
         )
         .filter(
-            Q(upvotes__gte=F("downvotes") * 0.8) | Q(downvotes__gte=F("upvotes") * 0.8),
-            total_votes__gte=5,
-            downvotes__gte=1,
-            upvotes__gte=1,
+            Q(vote_count__gt=1)
+            & Q(upvotes__gt=0)
+            & Q(downvotes__gt=0)
+            & Q(ratio__lte=1.1)
+            & Q(ratio__gte=0.9)
         )
-        .order_by("-total_votes")[:N_MOST_ITEMS_STATS]
+        .order_by("-vote_count")[:N_MOST_ITEMS_STATS]
     )
 
     # Extract words from task_data['text'] and count occurrences
