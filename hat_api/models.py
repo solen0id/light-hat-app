@@ -31,7 +31,6 @@ class VoteableTask(models.Model):
                 upvotes=self.upvotes,
                 downvotes=self.downvotes,
             )
-            HatActivity.objects.create(task=completed_task)
             self.delete()
 
 
@@ -60,12 +59,3 @@ class GenericCompletedVotableTask(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     task_data = JSONField()
-
-
-class HatActivity(models.Model):
-    task = models.ForeignKey(
-        GenericCompletedVotableTask,
-        on_delete=models.SET_NULL,
-        null=True,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)

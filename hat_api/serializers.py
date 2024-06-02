@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import HatText, VoteableTask, HatActivity
+from .models import HatText, VoteableTask, GenericCompletedVotableTask
 
 
 class VoteableTaskSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class HatTextSerializer(serializers.ModelSerializer):
     # do a custom method for the field "text" where we check a condition
 
 
-class HatActivitySerializer(serializers.ModelSerializer):
+class GenericCompletedVotableTaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HatActivity
+        model = GenericCompletedVotableTask
         fields = "__all__"

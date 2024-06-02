@@ -5,10 +5,10 @@ from django.http import HttpResponse
 
 from django.shortcuts import render
 from .models import HatText
-from .serializers import HatTextSerializer, HatActivitySerializer
+from .serializers import HatTextSerializer, GenericCompletedVotableTaskSerializer
 from datetime import timedelta
 from django.shortcuts import render
-from .models import GenericCompletedVotableTask, HatActivity
+from .models import GenericCompletedVotableTask
 from django.db.models import F, Q
 from collections import Counter
 import re
@@ -165,14 +165,16 @@ class HatTextViewSet(viewsets.ModelViewSet):
             return HttpResponse("")
 
 
-class HatActivityListView(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = HatActivity.objects.all()
-    serializer_class = HatActivitySerializer
+class GenericCompletedVotableTaskListView(
+    mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    queryset = GenericCompletedVotableTask.objects.all()
+    serializer_class = GenericCompletedVotableTaskSerializer
 
     @action(
         detail=False, methods=["get"], url_path="most-recent", url_name="most-recent"
     )
     def most_recent(self, request):
-        obj = self.get_queryset().order_by("-created_at").first()
+        obj = self.get_queryset().order_by("-completed_at").first()
         serializer = self.get_serializer(obj, many=False)
         return Response(serializer.data)
