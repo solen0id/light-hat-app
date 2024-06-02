@@ -368,7 +368,7 @@
         }
 
         function fetchTextsCompleted() {
-          fetch("/api/completed/")
+          fetch("/api/history/")
             .then((response) => response.json())
             .then((data) => {
               // Only update the DOM if the texts have changed
@@ -380,7 +380,7 @@
         }
 
         function fetchHatActivity() {
-          fetch("/api/completed/most-recent/")
+          fetch("/api/history/most-recent/")
             .then((response) => response.json())
             .then((data) => {
               const activityTime = new Date(data.completed_at);

@@ -28,7 +28,7 @@ from hat_api.views import (
 router = DefaultRouter()
 
 router.register(r"texts", HatTextViewSet)
-router.register(r"completed", GenericCompletedVotableTaskListView)
+router.register(r"history", GenericCompletedVotableTaskListView)
 
 urlpatterns = [
     path("", index, name="index"),
