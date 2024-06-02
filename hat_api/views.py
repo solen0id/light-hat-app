@@ -12,8 +12,14 @@ from .models import GenericCompletedVotableTask
 from django.db.models import F, Q
 from collections import Counter
 import re
-from emf_hat.settings import N_MOST_ITEMS_STATS
+from emf_hat.settings import (
+    N_MOST_ITEMS_STATS,
+    MIN_VOTE_COUNT_FOR_HAT_TASKS,
+    MIN_SECONDS_FOR_HAT_TASKS,
+)
 from django.utils import timezone
+from .throttles import IPAddressRateThrottle, TaskIDRateThrottle
+from rest_framework.decorators import throttle_classes
 
 
 def index(request):
@@ -67,6 +73,17 @@ class HatTextViewSet(viewsets.ModelViewSet):
     queryset = HatText.objects.all()
     serializer_class = HatTextSerializer
 
+    def get_throttles(self):
+
+        if self.request.method == "POST":
+            # if its upvote or downvote task, apply TaskIDRateThrottle
+            if "upvote" in self.request.path or "downvote" in self.request.path:
+                return [TaskIDRateThrottle()]
+            # otherwise its a post request to create a task
+            return [IPAddressRateThrottle()]
+
+        return super().get_throttles()
+
     @action(detail=True, methods=["post"])
     def upvote(self, request, pk=None):
         task = self.get_object()
@@ -107,8 +124,8 @@ class HatTextViewSet(viewsets.ModelViewSet):
         now = timezone.now()
 
         top_tasks = top_tasks.filter(
-            Q(created_at__lte=now - timedelta(seconds=60))
-            | Q(vote_count__gte=10)
+            Q(created_at__lte=now - timedelta(seconds=MIN_SECONDS_FOR_HAT_TASKS))
+            | Q(vote_count__gte=MIN_VOTE_COUNT_FOR_HAT_TASKS)
             | Q(text__startswith="!")
         )
 

@@ -16,6 +16,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+N_MOST_ITEMS_STATS = 10
+MIN_VOTE_COUNT_FOR_HAT_TASKS = 2
+MIN_SECONDS_FOR_HAT_TASKS = 60
+TASK_POST_PER_IP_RATE = "10/minute"
+TASK_VOTE_PER_IP_PER_MINUTE = 5
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -26,7 +31,10 @@ SECRET_KEY = "django-insecure-cu%=2hp#+h-+i48ai7jv4jr-ykvvf@zdso3ejbc@gom$4wgof4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = list(os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(","))
+DEFAULT_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = DEFAULT_HOSTS + list(
+    os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+)
 
 
 # Application definition
@@ -128,5 +136,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-N_MOST_ITEMS_STATS = 10
