@@ -59,3 +59,7 @@ class GenericCompletedVotableTask(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
 
     task_data = JSONField()
+
+    @property
+    def vote_count(self):
+        return self.upvotes - self.downvotes

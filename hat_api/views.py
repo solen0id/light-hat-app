@@ -38,7 +38,8 @@ def stats(request):
 
     most_controversial_tasks = (
         GenericCompletedVotableTask.objects.annotate(
-            ratio=F("upvotes") / F("downvotes") + 0.000001
+            ratio=F("upvotes") / F("downvotes") + 0.000001,
+            vote_count=F("upvotes") + F("downvotes"),
         )
         .filter(
             Q(vote_count__gt=1)
