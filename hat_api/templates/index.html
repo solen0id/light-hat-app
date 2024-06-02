@@ -14,6 +14,12 @@
         margin: 0;
         padding: 0;
         background-color: #f4f4f4;
+        
+        background-image: radial-gradient(#ddd 20%, transparent 20%),
+        radial-gradient(#ccc 20%, transparent 20%);
+        /*background-color: #FF0000;*/
+        background-position: 0 0, 5px 5px;
+        background-size: 10px 10px;
       }
       .container {
         width: 100%;
@@ -21,7 +27,7 @@
         margin: 20px auto;
         margin-top: 140px;
         padding: 20px;
-        background-color: #fff;
+        /*background-color: #fff;*/
         /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
         /*border-radius: 8px;*/
         box-sizing: border-box;
@@ -52,6 +58,11 @@
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
       }
       input[type="submit"] {
         padding: 10px 20px;
@@ -109,7 +120,9 @@
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        padding: 20px;
+        /*padding: 20px;*/
+        height:2.5em;
+        width:2.5em;
         margin: 0 5px;
         display: flex;
         align-items: center;
@@ -119,16 +132,20 @@
         border: none;
       }
       .upvote-button {
-        color: green;
+        background-color: green;
+        color: #fff;
       }
       .upvote-button:hover {
-        color: darkgreen;
+        background-color: darkgreen;
+        color: #fff;
       }
       .downvote-button {
-        color: orange;
+        background-color: orange;
+        color: #fff;
       }
       .downvote-button:hover {
-        color: darkorange;
+        background-color: darkorange;
+        color: #fff;
       }
       .message {
         font-family: 'Courier New', monospace;
@@ -155,6 +172,18 @@
         text-align: left;
       }
       
+      .info {
+        padding: 10px;
+        background-color: #fff;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      
        /* Style the tab */
       .tab {
         overflow: hidden;
@@ -163,7 +192,7 @@
       }
 
       /* Style the buttons that are used to open the tab content */
-      .tab button {
+      .tablinks {
         background-color: inherit;
         float: left;
         border: none;
@@ -174,17 +203,18 @@
       }
 
       /* Change background color of buttons on hover */
-      .tab button:hover {
+      .tablinks:hover {
         background-color: #ddd;
       }
 
       /* Create an active/current tablink class */
-      .tab button.active {
+      .tablinks.active {
         background-color: #ccc;
       }
 
       /* Style the tab content */
       .tabcontent {
+        width: 100%;
         display: none;
         /*padding: 6px 12px;*/
         /*border: 1px solid #ccc;*/
@@ -200,8 +230,9 @@
         
       <!-- Tab links -->
       <div class="tab">
-        <button class="tablinks" onclick="openCity(event, 'tab-hot')" id="defaultOpen">Hot</button>
-        <button class="tablinks" onclick="openCity(event, 'tab-history')">History</button>
+        <a class="tablinks" onclick="openCity(event, 'tab-hot')" id="defaultOpen">Hot</a>
+        <a class="tablinks" onclick="openCity(event, 'tab-history')">History</a>
+        <a class="tablinks" style="float:right;" onclick="openCity(event, 'tab-about')">About</a>
       </div>
     </div>
     
@@ -213,7 +244,33 @@
       <div id="tab-history" class="tabcontent">
         <ul class="hat-list" id="text-list-completed"></ul>
       </div>
+      
+      <div id="tab-about" class="tabcontent">
+        <div class="info">
+        Light_Hat is an art project in development.
+        <p>
+        With this app you can submit and vote on short text messages that will be displayed on the led top hat.
+        </p>
+        <ul>
+          <li>The light hat displayes the top message for for 30 seconds.</li>
+          <li>The message can be maximal 8 characters long to fit on the hat.</li>
+          <li>The hat displays upper case letters, numbers and usual special characters. Lower case letters will be converted to upper case.</li>
+          <li>To be displayed the message has to be at least 1 Minute old, or have at least 2 up-votes.</li>
+        </ul>
+        
+        
+        <p>
+        More information and code for the hat and for this app can be found here:
+        </p>
+        <ul>
+          <li><a href="https://mellmann.github.io/light_hat/">https://mellmann.github.io/light_hat/</a></li>
+          <li><a href="https://github.com/mellmann/light_hat">https://mellmann.github.io/light_hat/</a></li>
+          <li><a href="https://mellmann.github.io/light_hat/">https://github.com/solen0id/light-hat-app</a></li>
+        </ul>
+        </div>
+      </div>
     </div>
+    
     <form id="hat-form">
       <input
         type="text"
@@ -427,6 +484,8 @@
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active";
+        
+        return false;
       } 
       
       // Get the element with id="defaultOpen" and click on it
