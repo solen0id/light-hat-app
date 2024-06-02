@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -37,6 +38,12 @@
         text-align: center;
         margin-bottom: 20px;
         font-size: 24px;
+        color: #fff;
+        
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
       }
       #hat-form {
         display: flex;
@@ -163,6 +170,7 @@
         left: 0;
         box-sizing: border-box;
         z-index: 1000;
+        background-image: url('{% static "light_hat.gif" %}');
       }
       .online-indicator {
         background: #f4f4f4;
