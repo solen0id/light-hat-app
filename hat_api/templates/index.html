@@ -140,6 +140,7 @@
   <body>
     <div class="container">
       <h1>🎩 Light Hat 🎩</h1>
+      <div class="online-indicator" id="online-indicator">⚪ Checking...</div>
       <ul class="hat-list" id="text-list"></ul>
     </div>
     <form id="hat-form">
@@ -199,6 +200,25 @@
                 previousTexts = data;
                 updateTextList(data);
               }
+            });
+        }
+
+        function fetchHatActivity() {
+          fetch("/api/hat-activity/most-recent/")
+            .then((response) => response.json())
+            .then((data) => {
+              const activityTime = new Date(data.created_at);
+              const currentTime = new Date();
+              const diffSeconds = (currentTime - activityTime) / 1000;
+              if (diffSeconds <= 60) {
+                onlineIndicator.textContent = "🟢 HAT online";
+              } else {
+                onlineIndicator.textContent = "🔴 HAT offline";
+              }
+            })
+            .catch((error) => {
+              onlineIndicator.textContent = "⚪ Error checking status";
+              console.error("Error fetching hat activity:", error);
             });
         }
 
@@ -266,13 +286,13 @@
             });
         }
 
-
-
         // Poll for updates every 5 seconds
         setInterval(fetchTexts, 5000);
+        setInterval(fetchHatActivity, 5000);
 
         // Initial fetch and ping
         fetchTexts();
+        fetchHatActivity();
       });
     </script>
   </body>
