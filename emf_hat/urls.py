@@ -18,11 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from hat_api.views import HatTextViewSet, index, stats
+from hat_api.views import HatTextViewSet, HatActivityListView, index, stats
 
 router = DefaultRouter()
 
 router.register(r"texts", HatTextViewSet)
+router.register(r"hat-activity", HatActivityListView)
 
 urlpatterns = [
     path("", index, name="index"),

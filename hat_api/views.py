@@ -1,14 +1,14 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
 
 from django.shortcuts import render
 from .models import HatText
-from .serializers import HatTextSerializer
+from .serializers import HatTextSerializer, HatActivitySerializer
 from datetime import timedelta
 from django.shortcuts import render
-from .models import GenericCompletedVotableTask
+from .models import GenericCompletedVotableTask, HatActivity
 from django.db.models import F, Q
 from collections import Counter
 import re
@@ -74,7 +74,6 @@ class HatTextViewSet(viewsets.ModelViewSet):
     serializer_class = HatTextSerializer
 
     def get_throttles(self):
-
         if self.request.method == "POST":
             # if its upvote or downvote task, apply TaskIDRateThrottle
             if "upvote" in self.request.path or "downvote" in self.request.path:
@@ -83,6 +82,29 @@ class HatTextViewSet(viewsets.ModelViewSet):
             return [IPAddressRateThrottle()]
 
         return super().get_throttles()
+
+    def list(self, request, *args, **kwargs):
+        # Custom logic here
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # annotate queryset
+        now = timezone.now()
+        queryset = queryset.annotate(
+            is_ready=(
+                Q(created_at__lte=now - timedelta(seconds=MIN_SECONDS_FOR_HAT_TASKS))
+                | Q(vote_count__gte=MIN_VOTE_COUNT_FOR_HAT_TASKS)
+                | Q(text__startswith="!")
+            )
+        )
+
+        # You can apply pagination if needed
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["post"])
     def upvote(self, request, pk=None):
@@ -141,3 +163,16 @@ class HatTextViewSet(viewsets.ModelViewSet):
             return HttpResponse(text)
         else:
             return HttpResponse("")
+
+
+class HatActivityListView(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = HatActivity.objects.all()
+    serializer_class = HatActivitySerializer
+
+    @action(
+        detail=False, methods=["get"], url_path="most-recent", url_name="most-recent"
+    )
+    def most_recent(self, request):
+        obj = self.get_queryset().order_by("-created_at").first()
+        serializer = self.get_serializer(obj, many=False)
+        return Response(serializer.data)

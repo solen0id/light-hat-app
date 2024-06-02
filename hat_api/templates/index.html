@@ -24,6 +24,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         box-sizing: border-box;
+        position: relative; /* Added for positioning the online indicator */
       }
       h1 {
         text-align: center;
@@ -77,13 +78,18 @@
       .hat-item {
         padding: 10px;
         margin-bottom: 10px;
-        background-color: #e9ecef;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      .hat-item.ready {
+        background-color: #d4edda; /* Light green for ready tasks */
+      }
+      .hat-item.not-ready {
+        background-color: #e9ecef; /* Light gray for not ready tasks */
       }
       .hat-item span {
         font-size: 18px; /* Increased font size for task text */
@@ -123,6 +129,12 @@
       .downvote-button:hover {
         color: darkorange;
       }
+      .online-indicator {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 18px;
+      }
     </style>
   </head>
   <body>
@@ -148,6 +160,7 @@
         const hatTextInput = document.getElementById("hat-text");
         const textList = document.getElementById("text-list");
         const errorMessage = document.getElementById("error-message");
+        const onlineIndicator = document.getElementById("online-indicator");
 
         let previousTexts = [];
 
@@ -194,7 +207,9 @@
           data.sort((a, b) => b.vote_count - a.vote_count);
           data.forEach((text) => {
             const listItem = document.createElement("li");
-            listItem.className = "hat-item";
+            listItem.className = `hat-item ${
+              text.is_ready ? "ready" : "not-ready"
+            }`;
             listItem.innerHTML = `
                       <span>${text.text}</span>
                       <div class="vote-buttons">
@@ -251,10 +266,12 @@
             });
         }
 
+
+
         // Poll for updates every 5 seconds
         setInterval(fetchTexts, 5000);
 
-        // Initial fetch
+        // Initial fetch and ping
         fetchTexts();
       });
     </script>
