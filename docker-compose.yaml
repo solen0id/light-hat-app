@@ -16,6 +16,8 @@ services:
     environment:
       - DEBUG=1
       - DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1,[::1],nao-hybro.vm.informatik.hu-berlin.de,hat.naoth.de"
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
       - DB_NAME=postgres
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -34,6 +36,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    # ports:
+    #   - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
 
