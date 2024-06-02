@@ -15,9 +15,9 @@
         margin: 0;
         padding: 0;
         background-color: #f4f4f4;
-        
+
         background-image: radial-gradient(#ddd 20%, transparent 20%),
-        radial-gradient(#ccc 20%, transparent 20%);
+          radial-gradient(#ccc 20%, transparent 20%);
         /*background-color: #FF0000;*/
         background-position: 0 0, 5px 5px;
         background-size: 10px 10px;
@@ -65,8 +65,8 @@
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        
-        font-family: 'Courier New', monospace;
+
+        font-family: "Courier New", monospace;
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 0.1em;
@@ -128,8 +128,8 @@
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         /*padding: 20px;*/
-        height:2.5em;
-        width:2.5em;
+        height: 2.5em;
+        width: 2.5em;
         margin: 0 5px;
         display: flex;
         align-items: center;
@@ -155,7 +155,7 @@
         color: #fff;
       }
       .message {
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 0.2em;
@@ -179,7 +179,7 @@
         font-size: 18px;
         text-align: left;
       }
-      
+
       .info {
         padding: 10px;
         background-color: #fff;
@@ -191,8 +191,8 @@
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       }
-      
-       /* Style the tab */
+
+      /* Style the tab */
       .tab {
         overflow: hidden;
         border: 1px solid #ccc;
@@ -227,58 +227,88 @@
         /*padding: 6px 12px;*/
         /*border: 1px solid #ccc;*/
         border-top: none;
-      } 
+      }
     </style>
   </head>
   <body>
-    
-    <div class="head"> 
+    <div class="head">
       <div class="online-indicator" id="online-indicator">⚪ Checking...</div>
       <h1>🎩 Light Hat 🎩</h1>
-        
+
       <!-- Tab links -->
       <div class="tab">
-        <a class="tablinks" onclick="openCity(event, 'tab-hot')" id="defaultOpen">Hot</a>
+        <a
+          class="tablinks"
+          onclick="openCity(event, 'tab-hot')"
+          id="defaultOpen"
+          >Hot</a
+        >
         <a class="tablinks" onclick="openCity(event, 'tab-history')">History</a>
-        <a class="tablinks" style="float:right;" onclick="openCity(event, 'tab-about')">About</a>
+        <a
+          class="tablinks"
+          style="float: right"
+          onclick="openCity(event, 'tab-about')"
+          >About</a
+        >
       </div>
     </div>
-    
-    <div class="container">      
+
+    <div class="container">
       <div id="tab-hot" class="tabcontent">
         <ul class="hat-list" id="text-list"></ul>
       </div>
-      
+
       <div id="tab-history" class="tabcontent">
         <ul class="hat-list" id="text-list-completed"></ul>
       </div>
-      
+
       <div id="tab-about" class="tabcontent">
         <div class="info">
-        Light_Hat is an art project in development.
-        <p>
-        With this app you can submit and vote on short text messages that will be displayed on the led top hat.
-        </p>
-        <ul>
-          <li>The light hat displayes the top message for for 30 seconds.</li>
-          <li>The message can be maximal 8 characters long to fit on the hat.</li>
-          <li>The hat displays upper case letters, numbers and usual special characters. Lower case letters will be converted to upper case.</li>
-          <li>To be displayed the message has to be at least 1 Minute old, or have at least 2 up-votes.</li>
-        </ul>
-        
-        
-        <p>
-        More information and code for the hat and for this app can be found here:
-        </p>
-        <ul>
-          <li><a href="https://mellmann.github.io/light_hat/">https://mellmann.github.io/light_hat/</a></li>
-          <li><a href="https://github.com/mellmann/light_hat">https://mellmann.github.io/light_hat/</a></li>
-          <li><a href="https://mellmann.github.io/light_hat/">https://github.com/solen0id/light-hat-app</a></li>
-        </ul>
+          Light_Hat is an art project in development.
+          <p>
+            With this app you can submit and vote on short text messages that
+            will be displayed on the led top hat.
+          </p>
+          <ul>
+            <li>The light hat displayes the top message for for 30 seconds.</li>
+            <li>
+              The message can be maximal 8 characters long to fit on the hat.
+            </li>
+            <li>
+              The hat displays upper case letters, numbers and usual special
+              characters. Lower case letters will be converted to upper case.
+            </li>
+            <li>
+              To be displayed the message has to be at least 1 Minute old, or
+              have at least 2 up-votes.
+            </li>
+          </ul>
+
+          <p>
+            More information and code for the hat and for this app can be found
+            here:
+          </p>
+          <ul>
+            <li>
+              <a href="https://mellmann.github.io/light_hat/"
+                >https://mellmann.github.io/light_hat/</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/mellmann/light_hat"
+                >https://github.com/mellmann/light_hat</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/solen0id/light-hat-app"
+                >https://github.com/solen0id/light-hat-app</a
+              >
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-    
+
     <form id="hat-form">
       <input
         type="text"
@@ -296,7 +326,9 @@
         const form = document.getElementById("hat-form");
         const hatTextInput = document.getElementById("hat-text");
         const textList = document.getElementById("text-list");
-        const textListCompleted = document.getElementById("text-list-completed");
+        const textListCompleted = document.getElementById(
+          "text-list-completed"
+        );
         const errorMessage = document.getElementById("error-message");
         const onlineIndicator = document.getElementById("online-indicator");
 
@@ -334,15 +366,17 @@
             .then((response) => response.json())
             .then((data) => {
               // Only update the DOM if the texts have changed
-              if (JSON.stringify(data) !== JSON.stringify(previousTextsCompleted)) {
+              if (
+                JSON.stringify(data) !== JSON.stringify(previousTextsCompleted)
+              ) {
                 previousTextsCompleted = data;
                 updateTextList(data);
               }
             });
         }
-        
+
         function fetchTextsCompleted() {
-          fetch("/api/completed/")
+          fetch("/api/history/")
             .then((response) => response.json())
             .then((data) => {
               // Only update the DOM if the texts have changed
@@ -354,7 +388,7 @@
         }
 
         function fetchHatActivity() {
-          fetch("/api/completed/most-recent/")
+          fetch("/api/history/most-recent/")
             .then((response) => response.json())
             .then((data) => {
               const activityTime = new Date(data.completed_at);
@@ -396,9 +430,8 @@
           });
           addVoteEventListeners();
         }
-        
-        function updateTextCompletedList(data) 
-        {
+
+        function updateTextCompletedList(data) {
           console.log(data);
           textListCompleted.innerHTML = "";
           data.sort((a, b) => b.task_data.vote_count - a.task_data.vote_count);
@@ -469,10 +502,10 @@
 
         // Initial fetch and ping
         fetchTexts();
-        fetchTextsCompleted()
+        fetchTextsCompleted();
         fetchHatActivity();
       });
-      
+
       function openCity(evt, cityName) {
         // Declare all variables
         var i, tabcontent, tablinks;
@@ -492,10 +525,10 @@
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active";
-        
+
         return false;
-      } 
-      
+      }
+
       // Get the element with id="defaultOpen" and click on it
       document.getElementById("defaultOpen").click();
     </script>
