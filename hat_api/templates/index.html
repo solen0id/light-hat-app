@@ -1,122 +1,222 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Light Hat Texts</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-
-        background-image: radial-gradient(#ddd 20%, transparent 20%),
-          radial-gradient(#ccc 20%, transparent 20%);
-        /*background-color: #FF0000;*/
-        background-position: 0 0, 5px 5px;
-        background-size: 10px 10px;
-      }
-      .main_container {
-        width: 100%;
-        max-width: 600px;
-        margin: 0px auto;
-      }
-      .container {
-        width: 100%;
-        max-width: 600px;
-        margin: 20px auto;
-        margin-top: 140px;
-        padding: 20px;
-        /*background-color: #fff;*/
-        /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
-        /*border-radius: 8px;*/
-        box-sizing: border-box;
-        position: relative;
-      }
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #fff;
+    <title>Light Hat Texts</title>
+    <style>/* STRUCTURE */
+        * {
+          box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            
+            /* represents the full height of the viewport, regardless of the content on the page*/
+            min-height: 100vh;
+            
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            
+            margin:0;
+            padding:0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            
+            padding: 0;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px; /* Fixed width for desktop */
+        }
+        header, footer {
+            position: sticky;
+            left: 0;
+            right: 0;
+            /*z-index: 1000;*/
+        }
+        header {
+            top: 0;
+        }
+        footer {
+            bottom: 0;
+            margin-top: auto;
+        }
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+    </style>
+    <style> /* TABS */
+        .left {
+            float: left;
+        }
+        .right {
+            float: right;
+        }
         
-        font-family: 'Courier New', monospace;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons that are used to open the tab content */
+        .tablinks {
+            role="button"
+            background-color: inherit;
+
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        .tablinks:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tablinks.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            width: 100%;
+            display: none;
+        }
+    </style>
+    <style> /*header appearance*/
+      header {
+          background: #fff;
+          background-image: url('{% static "light_hat.gif" %}');
+          
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      header .online-indicator {
+          background: #f4f4f4;
+
+          padding-right: 10px;
+          font-size: 18px;
+          text-align: left;
+      }
+      header h1 {
+          text-align: center;
+          margin-bottom: 20px;
+          font-size: 24px;
+          color: #fff;
+          
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.2em;
+      }
+    </style>
+    <style> /* footer appearance */
+      footer {
+          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
       }
       #hat-form {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #fff;
-        padding: 10px;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        box-sizing: border-box;
-        z-index: 1000;
+          display: flex;
+          width: 100%;
+          
+          background-color: #fff;
+          padding: 10px;
       }
       input[type="text"] {
-        flex: 1;
-        padding: 10px;
-        margin-right: 10px;
-        box-sizing: border-box;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+          flex: 1;
+          padding: 10px;
+          margin-right: 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
 
-        font-family: "Courier New", monospace;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
+          font-family: "Courier New", monospace;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
       }
       input[type="submit"] {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        border-radius: 4px;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          cursor: pointer;
+          font-size: 16px;
+          border-radius: 4px;
       }
       input[type="submit"]:hover {
-        background-color: #0056b3;
+          background-color: #0056b3;
       }
       .error-message {
-        color: red;
-        font-size: 14px;
-        margin-bottom: 10px;
-        display: none;
+          padding: 10px;
+          color: red;
+          background-color: #FFEEEE;
+          font-size: 14px;
+          display: none;
       }
-      .hat-list {
-        list-style-type: none;
-        padding: 0;
+    </style>
+    <style> /* CONTENT appearance*/
+      .content {
+          padding: 20px;
+          
+          background-image: 
+              radial-gradient(#ddd 20%, transparent 20%),
+              radial-gradient(#ccc 20%, transparent 20%);
+            
+          background-position: 0 0, 5px 5px;
+          background-size: 10px 10px;
+      }
+      .info {
+          padding: 10px;
+          margin-bottom: 10px;
+          
+          background-color: #fff;        
+          justify-content: space-between;
+
+          border-radius: 8px;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      .hat-message-container {
+        width: 100%;
         margin: 0;
+        padding: 0;
       }
       .hat-item {
         padding: 10px;
         margin-bottom: 10px;
+        
+        /*justify-content: space-between;*/
+        /*align-items: center;*/
+        
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: row;
         flex-wrap: wrap;
+        
         border-radius: 8px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        background-color: #e9ecef;
+      }
+      .hat-item.template {
+        display: none;
       }
       .hat-item.ready {
         background-color: #d4edda;
       }
       .hat-item.not-ready {
         background-color: #e9ecef;
-      }
-      .hat-item span {
-        font-size: 18px;
       }
       .vote-buttons {
         display: flex;
@@ -160,388 +260,347 @@
         color: #fff;
       }
       .message {
+        display: flex;
+        flex: auto;
+        
         font-family: "Courier New", monospace;
         font-weight: bold;
+        font-size: 18px;
         text-transform: uppercase;
         letter-spacing: 0.2em;
         color: #030;
       }
-      .head {
-        width: 100%;
-        max-width: 600px;
-        position: fixed;
-        background: #fff;
-        top: 0;
-        left: 0;
-        box-sizing: border-box;
-        z-index: 1000;
-        background-image: url('{% static "light_hat.gif" %}');
-      }
-      .online-indicator {
-        background: #f4f4f4;
-        position: relative;
-        padding-right: 10px;
-        font-size: 18px;
-        text-align: left;
-      }
-
-      .info {
-        padding: 10px;
-        background-color: #fff;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        border-radius: 8px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Style the tab */
-      .tab {
-        overflow: hidden;
-        border: 1px solid #ccc;
-        background-color: #f1f1f1;
-      }
-
-      /* Style the buttons that are used to open the tab content */
-      .tablinks {
-        background-color: inherit;
-        float: left;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        padding: 14px 16px;
-        transition: 0.3s;
-      }
-
-      /* Change background color of buttons on hover */
-      .tablinks:hover {
-        background-color: #ddd;
-      }
-
-      /* Create an active/current tablink class */
-      .tablinks.active {
-        background-color: #ccc;
-      }
-
-      /* Style the tab content */
-      .tabcontent {
-        width: 100%;
-        display: none;
-        /*padding: 6px 12px;*/
-        /*border: 1px solid #ccc;*/
-        border-top: none;
-      }
     </style>
-  </head>
-  <body>
-    <div class="main_container">
-    <div class="head">
-      <div class="online-indicator" id="online-indicator">⚪ Checking...</div>
-      <h1>🎩 Light Hat 🎩</h1>
-
-      <!-- Tab links -->
-      <div class="tab">
-        <a
-          class="tablinks"
-          onclick="openCity(event, 'tab-hot')"
-          id="defaultOpen"
-          >Hot</a
-        >
-        <a class="tablinks" onclick="openCity(event, 'tab-history')">History</a>
-        <a
-          class="tablinks"
-          style="float: right"
-          onclick="openCity(event, 'tab-about')"
-          >About</a
-        >
-      </div>
-    </div>
-
+</head>
+<body>
     <div class="container">
-      <div id="tab-hot" class="tabcontent">
-        <ul class="hat-list" id="text-list"></ul>
-      </div>
+        <header>
+            <div class="online-indicator" id="online-indicator">⚪ Checking...</div>
+            <h1>🎩 Light Hat 🎩</h1>
 
-      <div id="tab-history" class="tabcontent">
-        <ul class="hat-list" id="text-list-completed"></ul>
-      </div>
+            <!-- Tab links -->
+            <div class="tab">
+              <a class="tablinks left" onclick="setActiveTab(event, 'tab-hot')" id="defaultOpen">Hot</a>
+              <a class="tablinks left" onclick="setActiveTab(event, 'tab-history')">History</a>
+              <a class="tablinks right" onclick="setActiveTab(event, 'tab-about')" >About</a>
+            </div>
+        </header>
+        <div class="content">
+        
+            <div id="tab-hot" class="tabcontent">
+                <div id="hat-message-list-hot" class="hat-message-container">
+                  <!-- Space for messages -->
+                </div>
+                <!-- template for a message -->
+                <div id="template-hat-item" class="hat-item template">
+                  <span id="message" class="message">MESSAGE</span>
+                  <div class="vote-buttons">
+                      <span id="num-votes" class="vote-count">0</span>
+                      <button id="button-downvote" class="vote-button downvote-button" data-id="0">
+                          <i class="fas fa-arrow-down"></i>
+                      </button>
+                      <button id="button-upvote" class="vote-button upvote-button" data-id="0">
+                          <i class="fas fa-arrow-up"></i>
+                      </button>
+                  </div>
+              </div>
+            </div>
 
-      <div id="tab-about" class="tabcontent">
-        <div class="info">
-          <center style="width:100%">
-          <img src="{% static "qr.png" %}"/>
-          </center>
-          Light_Hat is an art project in development.
-          <p>
-            With this app you can submit and vote on short text messages that
-            will be displayed on the led top hat.
-          </p>
-          <ul>
-            <li>The light hat displayes the top message for for 30 seconds.</li>
-            <li>
-              The message can be maximal 8 characters long to fit on the hat.
-            </li>
-            <li>
-              The hat displays upper case letters, numbers and usual special
-              characters. Lower case letters will be converted to upper case.
-            </li>
-            <li>
-              To be displayed the message has to be at least 1 Minute old, or
-              have at least 2 up-votes.
-            </li>
-          </ul>
+            <div id="tab-history" class="tabcontent">
+                <div id="hat-message-list-history" class="hat-message-container">
+                  <!-- Space for messages -->
+                </div>
+                <!-- template for a message -->
+                <div id="template-hat-item-history" class="hat-item template" style="role:'button';">
+                  <div id="message" class="message">MESSAGE</div>
+                  <div class="vote-buttons">
+                      <span id="num-down-votes" class="vote-count">0</span>
+                      <i class="fas fa-arrow-down"></i>
+                      
+                      <span id="num-up-votes" class="vote-count">0</span>
+                      <i class="fas fa-arrow-up"></i>
+                  </div>
+                </div>
+            </div>
 
-          <p>
-            More information and code for the hat and for this app can be found
-            here:
-          </p>
-          <ul>
-            <li>
-              <a href="https://mellmann.github.io/light_hat/"
-                >https://mellmann.github.io/light_hat/</a
-              >
-            </li>
-            <li>
-              <a href="https://github.com/mellmann/light_hat"
-                >https://github.com/mellmann/light_hat</a
-              >
-            </li>
-            <li>
-              <a href="https://github.com/solen0id/light-hat-app"
-                >https://github.com/solen0id/light-hat-app</a
-              >
-            </li>
-          </ul>
+            <div id="tab-about" class="tabcontent">
+              <div class="info">
+                <center style="width:100%">
+                  <img src="{% static "qr.png" %}"/>
+                </center>
+                Light_Hat is an art project in development.
+                <p>
+                  With this app you can submit and vote on short text messages that
+                  will be displayed on the led top hat.
+                </p>
+
+                <ul>
+                  <li>The light hat displayes the top message for for 30 seconds.</li>
+                  <li>
+                    The message can be maximal 8 characters long to fit on the hat.
+                  </li>
+                  <li>
+                    The hat displays upper case letters, numbers and usual special
+                    characters. Lower case letters will be converted to upper case.
+                  </li>
+                  <li>
+                    To be displayed the message has to be at least 1 Minute old, or
+                    have at least 2 up-votes.
+                  </li>
+                </ul>
+
+                <p>
+                  More information and code for the hat and for this app can be found
+                  here:
+                </p>
+                <ul>
+                  <li>
+                    <a href="https://mellmann.github.io/light_hat/">https://mellmann.github.io/light_hat/</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/mellmann/light_hat">https://github.com/mellmann/light_hat</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/solen0id/light-hat-app">https://github.com/solen0id/light-hat-app</a>
+                  </li>
+                </ul>
+              </div><!-- end tab info -->
+            </div>
         </div>
-      </div>
-    </div>
-
-    <form id="hat-form">
-      <input
-        type="text"
-        id="hat-text"
-        placeholder="Your Text, 8 chars max"
-        maxlength="8"
-      />
-      <input type="submit" value="Submit" />
-      <div class="error-message" id="error-message">
-        Text should not be longer than 8 characters.
-      </div>
-    </form>
-    
+        <footer>
+            <div class="error-message" id="error-message">
+              Text should not be longer than 8 characters.
+            </div>
+            <form id="hat-form">
+            <input
+              type="text"
+              id="hat-text"
+              placeholder="Your Text, 8 chars max"
+              maxlength="8"
+            />
+            <input type="submit" value="Submit" />
+          </form>
+        </footer>
     </div>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("hat-form");
-        const hatTextInput = document.getElementById("hat-text");
-        const textList = document.getElementById("text-list");
-        const textListCompleted = document.getElementById(
-          "text-list-completed"
-        );
-        const errorMessage = document.getElementById("error-message");
-        const onlineIndicator = document.getElementById("online-indicator");
+        document.addEventListener("DOMContentLoaded", function () 
+        {
+            // text submission
+            const form = document.getElementById("hat-form");
+            const hatTextInput = document.getElementById("hat-text");
+            const errorMessage = document.getElementById("error-message");
+            
+            //
+            const onlineIndicator = document.getElementById("online-indicator");
 
-        let previousTexts = [];
-        let previousTextsCompleted = [];
+            // container for messages
+            const textList = document.getElementById("hat-message-list-hot");
+            const textListCompleted = document.getElementById("hat-message-list-history");
 
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          const text = hatTextInput.value;
+            // templates for the messages
+            const templateHatItemHistory = document.getElementById("template-hat-item-history");
+            const templateHatItem        = document.getElementById("template-hat-item");
+            
 
-          if (text.length > 8) {
-            errorMessage.style.display = "block";
-            return;
-          } else {
-            errorMessage.style.display = "none";
+            let previousTexts = [];
+            let previousTextsCompleted = [];
+
+            form.addEventListener("submit", function (e) 
+            {
+              e.preventDefault();
+              const text = hatTextInput.value;
+
+              if (text.length > 8) {
+                errorMessage.innerText = "Text should not be longer than 8 characters.";
+                errorMessage.style.display = "block";
+                return;
+              } else {
+                errorMessage.style.display = "none";
+              }
+
+              fetch("/api/texts/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ text: text }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  hatTextInput.value = "";
+                  fetchTexts();
+                });
+            });
+            
+            
+            function fetchTexts() {
+              errorMessage.style.display = "none";
+              
+              fetch("/api/texts/")
+                .then((response) => response.json())
+                .then((data) => {
+                  // Only update the DOM if the texts have changed
+                  if (
+                    JSON.stringify(data) !== JSON.stringify(previousTextsCompleted)
+                  ) {
+                    previousTextsCompleted = data;
+                    updateTextList(data);
+                  }
+                });
+            }
+            
+            function fetchTextsCompleted() {
+              errorMessage.style.display = "none";
+              
+              fetch("/api/history/")
+                .then((response) => response.json())
+                .then((data) => {
+                  // Only update the DOM if the texts have changed
+                  if (JSON.stringify(data) !== JSON.stringify(previousTexts)) {
+                    previousTexts = data;
+                    updateTextCompletedList(data);
+                  }
+                });
+            }
+
+            function fetchHatActivity() {
+              errorMessage.style.display = "none";
+              
+              fetch("/api/history/most-recent/")
+                .then((response) => response.json())
+                .then((data) => {
+                  const activityTime = new Date(data.completed_at);
+                  const currentTime = new Date();
+                  const diffSeconds = (currentTime - activityTime) / 1000;
+                  if (diffSeconds <= 60) {
+                    onlineIndicator.textContent = "🟢 HAT online";
+                  } else {
+                    onlineIndicator.textContent = "🔴 HAT offline";
+                  }
+                })
+                .catch((error) => {
+                  onlineIndicator.textContent = "⚪ Error checking status";
+                  console.error("Error fetching hat activity:", error);
+                });
+            }
+            
+            function updateTextList(data) {
+              textList.innerHTML = "";
+              data.sort((a, b) => b.vote_count - a.vote_count);
+              data.forEach((message) => {
+                // create a new item based on the template
+                const item = templateHatItem.cloneNode(true);
+                item.className = `hat-item ${message.is_ready ? "ready" : "not-ready"}`;
+                item.querySelector("#message").innerText = message.text;
+                item.querySelector("#num-votes").innerText = message.vote_count;
+                
+                item.querySelector("#button-upvote").setAttribute("data-id", message.id);
+                item.querySelector("#button-downvote").setAttribute("data-id", message.id);
+                
+                item.querySelector("#button-upvote").onclick = function () {
+                  upDownVote(`/api/texts/${message.id}/upvote/`);
+                };
+                
+                item.querySelector("#button-downvote").onclick = function () {
+                  upDownVote(`/api/texts/${message.id}/downvote/`);
+                };
+                
+                textList.appendChild(item);
+              });
+            }
+            
+            function updateTextCompletedList(data) {
+              //console.log(data);
+              // remove all children
+              textListCompleted.innerHTML = "";
+              
+              // sort by activity
+              data.sort((a, b) => b.task_data.vote_count - a.task_data.vote_count);
+              data.forEach((entry) => {
+                const message = entry.task_data;
+                //console.log(message);
+                
+                // create a new item based on the template
+                const item = templateHatItemHistory.cloneNode(true);
+                item.className = "hat-item";
+                item.querySelector("#message").innerText = message.text;
+                item.querySelector("#num-down-votes").innerText = message.downvotes;
+                item.querySelector("#num-up-votes").innerText = message.upvotes;
+                item.onclick = function () {
+                  //console.log(message.text);
+                  hatTextInput.value = message.text;
+                };
+                
+                textListCompleted.appendChild(item);
+              });
+            }
+            
+            function upDownVote(url) {
+              //console.log(url);
+              fetch(url, {
+                method: "POST",
+                headers: {
+                  "X-CSRFToken": "{{ csrf_token }}",
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    return response.json();
+                  }
+                  return Promise.reject(response);
+                })
+                .then((data) => {
+                  fetchTexts();
+                }).catch((response) => {
+                  console.log(response);
+                  errorMessage.innerText = response.statusText;
+                  errorMessage.style.display = "block";
+                });
+            }
+            
+            // hat activity every 5s
+            fetchHatActivity();
+            setInterval(fetchHatActivity, 5000);
+            
+            // fetch texts every 5s
+            fetchTexts();
+            setInterval(fetchTexts, 5000);
+            
+            // fetch completed texts every 5s
+            fetchTextsCompleted();
+            setInterval(fetchTextsCompleted, 5000);
+            
+        }); // end content loaded
+        
+    
+        function setActiveTab(evt, cityName)
+        {
+          var i, tabcontent, tablinks;
+
+          // Get all elements with class="tabcontent" and hide them
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
           }
 
-          fetch("/api/texts/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": "{{ csrf_token }}",
-            },
-            body: JSON.stringify({ text: text }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              hatTextInput.value = "";
-              fetchTexts();
-            });
-        });
+          // Get all elements with class="tablinks" and remove the class "active"
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
 
-        function fetchTexts() {
-          fetch("/api/texts/")
-            .then((response) => response.json())
-            .then((data) => {
-              // Only update the DOM if the texts have changed
-              if (
-                JSON.stringify(data) !== JSON.stringify(previousTextsCompleted)
-              ) {
-                previousTextsCompleted = data;
-                updateTextList(data);
-              }
-            });
+          // Show the current tab, and add an "active" class to the button that opened the tab
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+
+          // prevent the link to be processed
+          return false;
         }
 
-        function fetchTextsCompleted() {
-          fetch("/api/history/")
-            .then((response) => response.json())
-            .then((data) => {
-              // Only update the DOM if the texts have changed
-              if (JSON.stringify(data) !== JSON.stringify(previousTexts)) {
-                previousTexts = data;
-                updateTextCompletedList(data);
-              }
-            });
-        }
-
-        function fetchHatActivity() {
-          fetch("/api/history/most-recent/")
-            .then((response) => response.json())
-            .then((data) => {
-              const activityTime = new Date(data.completed_at);
-              const currentTime = new Date();
-              const diffSeconds = (currentTime - activityTime) / 1000;
-              if (diffSeconds <= 60) {
-                onlineIndicator.textContent = "🟢 HAT online";
-              } else {
-                onlineIndicator.textContent = "🔴 HAT offline";
-              }
-            })
-            .catch((error) => {
-              onlineIndicator.textContent = "⚪ Error checking status";
-              console.error("Error fetching hat activity:", error);
-            });
-        }
-
-        function updateTextList(data) {
-          textList.innerHTML = "";
-          data.sort((a, b) => b.vote_count - a.vote_count);
-          data.forEach((text) => {
-            const listItem = document.createElement("li");
-            listItem.className = `hat-item ${
-              text.is_ready ? "ready" : "not-ready"
-            }`;
-            listItem.innerHTML = `
-                      <span class="message">${text.text}</span>
-                      <div class="vote-buttons">
-                          <span class="vote-count">${text.vote_count}</span>
-                          <button class="vote-button downvote-button" data-id="${text.id}">
-                              <i class="fas fa-arrow-down"></i>
-                          </button>
-                          <button class="vote-button upvote-button" data-id="${text.id}">
-                              <i class="fas fa-arrow-up"></i>
-                          </button>
-                      </div>
-                  `;
-            textList.appendChild(listItem);
-          });
-          addVoteEventListeners();
-        }
-
-        function updateTextCompletedList(data) {
-          console.log(data);
-          textListCompleted.innerHTML = "";
-          data.sort((a, b) => b.task_data.vote_count - a.task_data.vote_count);
-          data.forEach((entry) => {
-            const text = entry.task_data;
-            console.log(text);
-            const listItem = document.createElement("li");
-            listItem.className = `hat-item ${
-              text.is_ready ? "ready" : "not-ready"
-            }`;
-            listItem.innerHTML = `
-                      <span class="message">${text.text}</span>
-                      <div class="vote-buttons">
-                          <span class="vote-count">${text.downvotes}</span>
-                          <i class="fas fa-arrow-down"></i>
-                          <span class="vote-count">${text.upvotes}</span>
-                          <i class="fas fa-arrow-up"></i>
-                      </div>
-                  `;
-            textListCompleted.appendChild(listItem);
-          });
-          addVoteEventListeners();
-        }
-
-        function addVoteEventListeners() {
-          document
-            .querySelectorAll(".upvote-button")
-            .forEach(function (button) {
-              button.addEventListener("click", function () {
-                const textId = this.getAttribute("data-id");
-                fetch(`/api/texts/${textId}/upvote/`, {
-                  method: "POST",
-                  headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json",
-                  },
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    fetchTexts();
-                  });
-              });
-            });
-          document
-            .querySelectorAll(".downvote-button")
-            .forEach(function (button) {
-              button.addEventListener("click", function () {
-                const textId = this.getAttribute("data-id");
-                fetch(`/api/texts/${textId}/downvote/`, {
-                  method: "POST",
-                  headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json",
-                  },
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    fetchTexts();
-                  });
-              });
-            });
-        }
-
-        // Poll for updates every 5 seconds
-        setInterval(fetchTexts, 5000);
-        setInterval(fetchTextsCompleted, 5000);
-        setInterval(fetchHatActivity, 5000);
-
-        // Initial fetch and ping
-        fetchTexts();
-        fetchTextsCompleted();
-        fetchHatActivity();
-      });
-
-      function openCity(evt, cityName) {
-        // Declare all variables
-        var i, tabcontent, tablinks;
-
-        // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-          tabcontent[i].style.display = "none";
-        }
-
-        // Get all elements with class="tablinks" and remove the class "active"
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-          tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-
-        // Show the current tab, and add an "active" class to the button that opened the tab
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += " active";
-
-        return false;
-      }
-
-      // Get the element with id="defaultOpen" and click on it
-      document.getElementById("defaultOpen").click();
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
     </script>
-  </body>
+</body>
 </html>
