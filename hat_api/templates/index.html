@@ -470,10 +470,11 @@
               fetch("/api/texts/top-text-requested-time/")
                 .then((response) => response.json())
                 .then((data) => {
-                  const activityTime = new Date(data.top_text_requested_time*1000);
+                  
+                  const activityTime = new Date(data.timestamp);
                   const currentTime = new Date();
                   const diffSeconds = (currentTime - activityTime) / 1000;
-                  //console.log(diffSeconds)
+                  console.log(diffSeconds)
                   if (diffSeconds <= 60) {
                     onlineIndicator.textContent = "🟢 HAT online";
                   } else {

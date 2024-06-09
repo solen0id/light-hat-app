@@ -63,3 +63,10 @@ class GenericCompletedVotableTask(models.Model):
     @property
     def vote_count(self):
         return self.upvotes - self.downvotes
+
+
+class ApiRequestTimestamp(models.Model):
+    timestamp = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return str(self.timestamp)

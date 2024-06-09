@@ -1,25 +1,34 @@
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
+from rest_framework.decorators import throttle_classes
 from rest_framework.response import Response
-from django.http import HttpResponse
+from rest_framework import status
 
+from django.http import HttpResponse
 from django.shortcuts import render
-from .models import HatText
-from .serializers import HatTextSerializer, GenericCompletedVotableTaskSerializer
-from datetime import timedelta
 from django.shortcuts import render
-from .models import GenericCompletedVotableTask
+from django.utils import timezone
 from django.db.models import F, Q
-from collections import Counter
+
+from datetime import timedelta
 import re
+from collections import Counter
+
 from emf_hat.settings import (
     N_MOST_ITEMS_STATS,
     MIN_VOTE_COUNT_FOR_HAT_TASKS,
     MIN_SECONDS_FOR_HAT_TASKS,
 )
-from django.utils import timezone
+
+
+from .models import HatText
+from .models import ApiRequestTimestamp
+from .models import GenericCompletedVotableTask
+
+from .serializers import HatTextSerializer, GenericCompletedVotableTaskSerializer
+
 from .throttles import IPAddressRateThrottle, TaskIDRateThrottle
-from rest_framework.decorators import throttle_classes
+
 
 
 def index(request):
@@ -74,8 +83,6 @@ class HatTextViewSet(viewsets.ModelViewSet):
     queryset = HatText.objects.all()
     serializer_class = HatTextSerializer
     
-    top_text_requested_time = -1
-
     def get_throttles(self):
         if self.request.method == "POST":
             # if its upvote or downvote task, apply TaskIDRateThrottle
@@ -149,7 +156,7 @@ class HatTextViewSet(viewsets.ModelViewSet):
         now = timezone.now()
         
         # remember the time of the request to track the activity of the hat
-        top_text_requested_time = now.timestamp()
+        ApiRequestTimestamp.objects.update_or_create(id=1, defaults={'timestamp': now})
 
         top_tasks = top_tasks.filter(
             Q(created_at__lte=now - timedelta(seconds=MIN_SECONDS_FOR_HAT_TASKS))
@@ -173,7 +180,11 @@ class HatTextViewSet(viewsets.ModelViewSet):
     # time when the last hat text was requested
     @action(detail=False, methods=["get"], url_path="top-text-requested-time", url_name="top-text-requested-time")
     def top_text_requested(self, request):
-        return Response({'top_text_requested_time' : top_text_requested_time})
+        try:
+            timestamp_entry = ApiRequestTimestamp.objects.get(id=1)
+            return Response({'timestamp': timestamp_entry.timestamp}, status=status.HTTP_200_OK)
+        except ApiRequestTimestamp.DoesNotExist:
+            return Response({'error': 'Timestamp not found'}, status=status.HTTP_404_NOT_FOUND)
             
 
 
@@ -183,9 +194,7 @@ class GenericCompletedVotableTaskListView(
     queryset = GenericCompletedVotableTask.objects.all()
     serializer_class = GenericCompletedVotableTaskSerializer
 
-    @action(
-        detail=False, methods=["get"], url_path="most-recent", url_name="most-recent"
-    )
+    @action(detail=False, methods=["get"], url_path="most-recent", url_name="most-recent")
     def most_recent(self, request):
         obj = self.get_queryset().order_by("-completed_at").first()
         serializer = self.get_serializer(obj, many=False)
