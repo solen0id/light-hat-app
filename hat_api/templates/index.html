@@ -467,12 +467,13 @@
             function fetchHatActivity() {
               errorMessage.style.display = "none";
               
-              fetch("/api/history/most-recent/")
+              fetch("/api/texts/top-text-requested-time/")
                 .then((response) => response.json())
                 .then((data) => {
-                  const activityTime = new Date(data.completed_at);
+                  const activityTime = new Date(data.top_text_requested_time*1000);
                   const currentTime = new Date();
                   const diffSeconds = (currentTime - activityTime) / 1000;
+                  //console.log(diffSeconds)
                   if (diffSeconds <= 60) {
                     onlineIndicator.textContent = "🟢 HAT online";
                   } else {

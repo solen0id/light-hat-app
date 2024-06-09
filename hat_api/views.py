@@ -145,6 +145,9 @@ class HatTextViewSet(viewsets.ModelViewSet):
         # or start with the char ! (for special tasks)
 
         now = timezone.now()
+        
+        # remember the time of the request to track the activity of the hat
+        request.session['top_text_requested_time'] = now.timestamp()
 
         top_tasks = top_tasks.filter(
             Q(created_at__lte=now - timedelta(seconds=MIN_SECONDS_FOR_HAT_TASKS))
@@ -164,6 +167,13 @@ class HatTextViewSet(viewsets.ModelViewSet):
             return HttpResponse(text)
         else:
             return HttpResponse("")
+
+    # time when the last hat text was requested
+    @action(detail=False, methods=["get"], url_path="top-text-requested-time", url_name="top-text-requested-time")
+    def top_text_requested(self, request):
+        top_text_requested_time = request.session.get('top_text_requested_time', -1)
+        return Response({'top_text_requested_time' : top_text_requested_time})
+            
 
 
 class GenericCompletedVotableTaskListView(
